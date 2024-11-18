@@ -2,6 +2,7 @@
     <meta charset="UTF-8">
     <title>Looney Teams Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --pastel-blue: #A7C7E7;
@@ -21,6 +22,31 @@
             padding: 20px;
             box-sizing: border-box;
         }
+        .app-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .instructions-section {
+            background-color: var(--pastel-lavender);
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+            align-self: flex-start;
+            position: sticky;
+            top: 20px;
+        }
+        .instructions-section h2 {
+            font-family: 'Assistant', sans-serif;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .instructions-section ol {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
         .container {
             background-color: white;
             border-radius: 15px;
@@ -28,6 +54,12 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 600px;
+        }
+        h1 {
+            font-family: 'Assistant', sans-serif;
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
         }
         .input-section {
             display: flex;
@@ -39,6 +71,9 @@
             padding: 10px;
             border: 2px solid var(--pastel-lavender);
             border-radius: 8px;
+            min-width: 200px;  /* Added to ensure wider inputs */
+            width: 100%;       /* Ensure full width within flex container */
+            box-sizing: border-box; /* Prevent padding from breaking layout */
         }
         button {
             background-color: var(--pastel-green);
@@ -112,30 +147,51 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .instructions-section {
+                width: 100%;
+                position: static;
+            }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="input-section">
-            <input type="text" id="personInput" placeholder="Enter person's name">
-            <button onclick="addPerson()">➕ Add</button>
+    <div class="app-container">
+        <div class="instructions-section">
+            <h2>How To Use</h2>
+            <ol>
+                <li>Import an excel file with your classmates names / add each one yourself.</li>
+                <li>Write down how many members you would like to divide into teams, and how many members within each team.</li>
+                <li>Randomize the drama out the window</li>
+                <li>Be a solid team member</li>
+            </ol>
         </div>
-        
-        <div class="file-upload-container">
-            <input type="file" id="fileUpload" accept=".pdf,.docx,.doc,.txt,.csv,.xlsx" onchange="processFileUpload(event)">
-            <button class="file-upload-btn" onclick="document.getElementById('fileUpload').click()">📄 Add Names List</button>
-            <span id="fileName" class="file-name"></span>
+        <div class="container">
+            <h1>Random Team Builder</h1>
+            <div class="input-section">
+                <input type="text" id="personInput" placeholder="Enter person's name">
+                <button onclick="addPerson()">➕ Add</button>
+            </div>
+            
+            <div class="file-upload-container">
+                <input type="file" id="fileUpload" accept=".pdf,.docx,.doc,.txt,.csv,.xlsx" onchange="processFileUpload(event)">
+                <button class="file-upload-btn" onclick="document.getElementById('fileUpload').click()">📄 Add Names List</button>
+                <span id="fileName" class="file-name"></span>
+            </div>
+            
+            <div class="input-section" id="teamConfig">
+                <input type="number" id="teamSizeInput" placeholder="People per team" min="1" max="20">
+                <input type="number" id="totalPeopleInput" placeholder="Total people" min="1" max="300">
+                <button onclick="generateTeams()">🎲 Generate Teams</button>
+                <button onclick="resetApplication()" style="background-color: var(--pastel-pink);">🧹 Clean Slate</button>
+            </div>
+            <div id="peopleList"></div>
+            <div id="teams"></div>
         </div>
-        
-        <div class="input-section" id="teamConfig">
-            <input type="number" id="teamSizeInput" placeholder="People per team" min="1" max="20">
-            <input type="number" id="totalPeopleInput" placeholder="Total people" min="1" max="300">
-            <button onclick="generateTeams()">🎲 Generate Teams</button>
-            <button onclick="resetApplication()" style="background-color: var(--pastel-pink);">🧹 Clean Slate</button>
-        </div>
-        <div id="peopleList"></div>
-        <div id="teams"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
